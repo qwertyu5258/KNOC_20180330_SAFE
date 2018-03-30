@@ -1,9 +1,13 @@
+<%@page import="java.nio.charset.StandardCharsets"%>
 <%@ page language="java" contentType="text/html; charset=EUC-KR"
 	pageEncoding="EUC-KR"%>
 <%@ page import="kr.co.knoc.util.*"%>
 <%@ page import="kr.co.knoc.search.*"%>
 <%@ page import="com.neoboard.*"%>
 <%@ page import="java.util.*"%>
+<%@ page import="java.net.URLEncoder"%>
+<%@ page import="java.net.URLDecoder"%>
+
 <%@ taglib uri="/WEB-INF/tlds/sitetaglib.tld" prefix="stl"%>
 <jsp:useBean id="pp" class="kr.co.knoc.tags.pager.PageProperty"
 	scope="request" />
@@ -28,58 +32,76 @@
 %>
 <%
 	String key_word = etcutil.strBlockSpecialTags(etcutil.checkNull(request.getParameter("search")), "8859_1");
+
+	if (key_word == null) {
+		System.out.println("키워드 널1");
+
+	}
+System.out.println("key_word1::::"+key_word);
+/* 	if (key_word.equals("")) {
+		System.out.println("키워드 널2: 디코더값");
+		String key_word1;
+		key_word1 = URLDecoder.decode(request.getParameter("search1"), "UTF-8");
+		System.out.println("keyword:" + key_word1);
+		key_word1 = URLDecoder.decode(request.getParameter("search1"), StandardCharsets.UTF_8.toString());
+		System.out.println(key_word1);
+
+	}
+	 */
+	
 	String nowpage = etcutil.strBlockSpecialTags(etcutil.checkNull(request.getParameter("page")));
-	String boardname=null;
-	
+	String boardname = null;
+
 	System.out.println("============list.jsp : 1===============");
-	System.out.println("Log:"+"key_word:"+key_word);
-	System.out.println("Log:"+"nowpage:"+nowpage);
-	System.out.println("Log:"+"boardname:"+boardname);
+	System.out.println("Log:" + "key_word:" + key_word);
+	System.out.println("Log:" + "nowpage:" + nowpage);
+	
 	System.out.println("===========================");
-	
-	
-	
+
 	if (request.getParameter("key_word") != null) {
+		
 		key_word = request.getParameter("key_word");
 	}
 	if (request.getParameter("boardname") != null) {
-
 		boardname = request.getParameter("boardname");
-
+		System.out.println("Log:" + "boardname2:" + boardname);
 	}
+	if (request.getParameter("key_word") != null) {
+	//	boardname = request.getParameter("key_word");
+	}
+	
 	pp.setPage(nowpage);
 
 	pp.setPageSize("10");
 	pp.setPageUrl("");
 
 	System.out.println("=============2==============");
-	System.out.println("Log:"+"key_word:"+key_word);
-	System.out.println("Log:"+"boardname:"+boardname);
-	System.out.println("Log:"+"pp.getPage:"+pp.getPage());
-	System.out.println("Log:"+"pp.getpageSize:"+pp.getPageSize());
-	System.out.println("Log:"+"pp.getpageurl:"+pp.getPageUrl());
-	System.out.println("Log:"+"pp.getNpage:"+pp.getNPage());
-	System.out.println("Log:"+"pp.getNpageSize:"+pp.getNPageSize());
+	System.out.println("Log:" + "key_word:" + key_word);
+	System.out.println("Log:" + "boardname:" + boardname);
+	System.out.println("Log:" + "pp.getPage:" + pp.getPage());
+	System.out.println("Log:" + "pp.getpageSize:" + pp.getPageSize());
+	System.out.println("Log:" + "pp.getpageurl:" + pp.getPageUrl());
+	System.out.println("Log:" + "pp.getNpage:" + pp.getNPage());
+	System.out.println("Log:" + "pp.getNpageSize:" + pp.getNPageSize());
 	System.out.println("===========================");
-	
 
-		ArrayList al = SearchMa.getSearchList(key_word, pp.getNPage(), pp.getNPageSize());
-		if (request.getParameter("boardname") != null) {
-		al = SearchMa.getSearchList2(key_word, pp.getNPage(), pp.getNPageSize(),boardname);
+	ArrayList al = SearchMa.getSearchList(key_word, pp.getNPage(), pp.getNPageSize());
+	if (request.getParameter("boardname") != null) {
+		System.out.println(key_word +"::::" + pp.getNPage()+"::::" + pp.getNPageSize()+"::::" + boardname);
+		al = SearchMa.getSearchList2(key_word, pp.getNPage(), pp.getNPageSize(), boardname);
 	}
-	
+
 	//count 도 재호출시 변경!!!!!!!!!
-	
+
 	int count = SearchMa.getSearchListCount(key_word);
-	
-	
+
 	System.out.println("=============3==============");
-	System.out.println("Log:"+"count:"+count);
-	
+	System.out.println("Log:" + "count:" + count);
+
 	if (count == 0) {
 		count = SearchMa.getSearchListCount2(key_word);
 	}
-	
+
 	int seq = count - (pp.getNPage() - 1) * pp.getNPageSize();
 
 	System.out.println(count);
@@ -121,52 +143,56 @@
 				</h3>
 			</div>
 
-			<table style="width: 100%; height: 80px; boarder-spacing: 0px">
+			<table
+				style="width: 100%; height: 80px; boarder-spacing: 0px; margin-top: 15px">
 				<tr>
 					<th style="height: 40px"><button onclick="searchboard('전체')"
-							style="background: url(/images/btn_searchsub3.png); width: 99%; height: 99%; margin-bottom: 2px">
-							<p style="text-size: 100%; font-size: 20px">
+					
+							style="background: url(/images/search/btn_2.png); width: 99%; height: 99%; margin-bottom: 2px">
+							<p style="text-size: 100%; font-size: 15px">
 								전 체(<%=count%>)
 							</p>
 						</button></th>
 					<th style="height: 40px"><button onclick="searchboard('활동마당')"
-							style="background: url(/images/btn_searchsub3.png); width: 99%; height: 99%; margin-bottom: 2px">
-							<p style="text-size: 100%; font-size: 20px;">활동마당</p>
+							style="background: url(/images/search/btn_2.png); width: 99%; height: 99%; margin-bottom: 2px">
+							<p style="text-size: 100%; font-size: 15px;">활동마당</p>
 						</button></th>
 					<th style="height: 40px"><button onclick="searchboard('포토뉴스')"
-							style="background: url(/images/btn_searchsub3.png); width: 99%; height: 99%; margin-bottom: 2px">
-							<p style="text-size: 100%; font-size: 20px">포토뉴스</p>
+							style="background: url(/images/search/btn_2.png); width: 99%; height: 99%; margin-bottom: 2px">
+							<p style="text-size: 100%; font-size: 15px">포토뉴스</p>
 						</button></th>
-					<th style="height: 40px"><button onclick="searchboard('임원출장정보')"
-							style="background: url(/images/btn_searchsub3.png); width: 99%; height: 99%; margin-bottom: 2px">
-							<p style="text-size: 100%; font-size: 20px">임원출장정보</p>
+					<th style="height: 40px"><button
+							onclick="searchboard('임원출장정보')"
+							style="background: url(/images/search/btn_2.png); width: 99%; height: 99%; margin-bottom: 2px">
+							<p style="text-size: 100%; font-size: 15px">임원출장정보</p>
 						</button></th>
 					<th style="height: 40px"><button onclick="searchboard('보도자료')"
-							style="background: url(/images/btn_searchsub3.png); width: 99%; height: 99%; margin-bottom: 2px">
-							<p style="text-size: 100%; font-size: 20px">보도자료</p>
+							style="background: url(/images/search/btn_2.png); width: 99%; height: 99%; margin-bottom: 2px">
+							<p style="text-size: 100%; font-size: 15px">보도자료</p>
 						</button></th>
 
 				</tr>
 				<tr style="height: 40px">
-					<th style="height: 40px"><button onclick="searchboard('고객상담실')"
-							style="background: url(/images/btn_searchsub3.png); width: 99%; height: 99%;">
-							<p style="text-size: 100%; font-size: 20px">고객상담실</p>
+					<th style="height: 40px"><button
+							onclick="searchboard('고객상담실')"
+							style="background: url(/images/search/btn_2.png); width: 99%; height: 99%;">
+							<p style="text-size: 100%; font-size: 15px">고객상담실</p>
 						</button></th>
 					<th style="height: 40px"><button onclick="aaa()"
-							style="background: url(/images/btn_searchsub3.png); width: 99%; height: 99%;">
-							<p style="text-size: 100%; font-size: 20px">.</p>
+							style="background: url(/images/search/btn_2.png); width: 99%; height: 99%;">
+							<p style="text-size: 100%; font-size: 15px">.</p>
 						</button></th>
 					<th style="height: 40px"><button onclick="aaa()"
-							style="background: url(/images/btn_searchsub3.png); width: 99%; height: 99%;">
-							<p style="text-size: 100%; font-size: 20px">.</p>
+							style="background: url(/images/search/btn_2.png); width: 99%; height: 99%;">
+							<p style="text-size: 100%; font-size: 15px">.</p>
 						</button></th>
 					<th style="height: 40px"><button onclick="aaa()"
-							style="background: url(/images/btn_searchsub3.png); width: 99%; height: 99%;">
-							<p style="text-size: 100%; font-size: 30px">.</p>
+							style="background: url(/images/search/btn_2.png); width: 99%; height: 99%;">
+							<p style="text-size: 100%; font-size: 15px">.</p>
 						</button></th>
 					<th style="height: 40px"><button onclick="aaa()"
-							style="background: url(/images/btn_searchsub3.png); width: 99%; height: 99%;">
-							<p style="text-size: 100%; font-size: 30px">.</p>
+							style="background: url(/images/search/btn_2.png); width: 99%; height: 99%;">
+							<p style="text-size: 100%; font-size: 15px">.</p>
 						</button></th>
 				</tr>
 
@@ -234,11 +260,16 @@
 					firstPage="firstPage" lastPage="lastPage" blockSize="10"
 					totalCount="<%=count%>" />
 				<div class="paging pt10 ctxt">
-					<a href="<%=prevBlock.getAnchor("&search=" + key_word)%>"><img
-						src="/images/board/preview.gif" alt="처음" /></a>
-						
-						 <a
-						href="<%=prevPage.getAnchor("&search=" + key_word)%>"><img
+				
+						<%
+						String encodeResult = URLEncoder.encode(key_word, StandardCharsets.UTF_8.toString());
+
+						System.out.println("encodeResult" + encodeResult);
+					%>
+				
+					<a href="<%=prevBlock.getAnchor("&search=" + encodeResult)%>"><img
+						src="/images/board/preview.gif" alt="처음" /></a> <a
+						href="<%=prevPage.getAnchor("&search=" + encodeResult)%>"><img
 						src="/images/board/ppreview.gif" alt="이전" /></a>
 					<%
 						int ll = 1;
@@ -258,7 +289,14 @@
 						<%
 							} else {
 						%>
-						<a href="<%=p.getAnchor("&search=" + key_word)%>"><%=p.getPage()%></a>
+						
+				<%-- 			<%
+						String encodeResult = URLEncoder.encode(key_word, StandardCharsets.UTF_8.toString());
+
+						System.out.println("encodeResult" + encodeResult);
+					%> --%>
+						
+						<a href="<%=p.getAnchor("&search=" + encodeResult)%>"><%=p.getPage()%></a>
 						<%
 							if (ll != pages.size()) {
 						%>
@@ -272,16 +310,27 @@
 							ll++;
 						%>
 					</stl:loop>
-		<%-- 			<a href="<%=nextPage.getAnchor("&search=" + key_word)%>"><img
+					<%-- 			<a href="<%=nextPage.getAnchor("&search=" + key_word)%>"><img
 						src="/images/board/nnext.gif" alt="다음" /></a> <a
 						href="<%=nextBlock.getAnchor("&search=" + key_word)%>"><img
 						src="/images/board/next.gif" alt="끝" /></a> --%>
-						
-							<a href="<%=nextPage.getAnchor("&search=" + key_word)%>"><img
+
+				
+
+					<!-- 다음줄 추후검토 원래 search1 이아니라 search 였음 -->
+		<%-- 			<%
+						String encodeResult = URLEncoder.encode(key_word, StandardCharsets.UTF_8.toString());
+						System.out.println("encodeResult" + encodeResult);
+					%>
+ --%>
+					<a href="<%=nextPage.getAnchor("&search=" + encodeResult)%>"><img
 						src="/images/board/nnext.gif" alt="다음" /></a> <a
-						href="<%=nextBlock.getAnchor("&search=" + key_word)%>"><img
+						href="<%=nextBlock.getAnchor("&search=" + encodeResult)%>"><img
 						src="/images/board/next.gif" alt="끝" /></a>
 				</div>
+
+
+
 				<!--// paging: end //-->
 			</div>
 		</div>
@@ -295,7 +344,7 @@
 
 <script>
 	function aaa(boardname) {
-
+alert('a');
 		window.location.href="http://localhost:8080/search/list.jsp?boardname="+encodeURI(boardname)+"&key_word="+encodeURI("<%=key_word%>");
 
 	}
